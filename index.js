@@ -44,10 +44,8 @@ const resolvers = {
   Mutation: {
     uploadFile: async (_, { file, description, sentBy, long, lat }) => {
       const { createReadStream, filename, mimetype, encoding } = await file;
-
+      const pathName = path.join(__dirname, `/images/img${filename}`);
       const stream = createReadStream();
-      const pathName = path.join(__dirname, `/public/images/${filename}`);
-
       await stream.pipe(fs.createWriteStream(pathName));
 
       try {
@@ -55,9 +53,9 @@ const resolvers = {
           description,
           sentBy,
           coordinates: { long, lat },
-          file: `http://localhost:4000/public/images/${filename}`,
+          file: `http://localhost:4000/graphql/images/${filename}`,
         });
-        return `http://localhost:4000/public/images/${filename}`;
+        return `http://localhost:4000/graphql/images/${filename}`;
       } catch (error) {
         console.log(error);
         return JSON.stringify(error);
